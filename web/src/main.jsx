@@ -7,6 +7,13 @@ import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { RootLayout } from "./pages/RootLayout";
+import { ClerkProvider } from "@clerk/clerk-react";
+
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
 
 const router = createBrowserRouter([
   {
@@ -35,6 +42,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <RouterProvider router={router} />
+    </ClerkProvider>
   </React.StrictMode>
 );

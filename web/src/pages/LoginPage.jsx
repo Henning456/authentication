@@ -1,7 +1,12 @@
 import "./LoginPage.css";
 import { useState } from "react";
+import { useUser } from "@clerk/clerk-react";
+import { useSignIn } from "@clerk/clerk-react";
+import { isClerkAPIResponseError } from "@clerk/clerk-react/errors";
 
 export function LoginPage() {
+  const { isSignedIn } = useUser();
+  const { signIn, setActive } = useSignIn();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -16,9 +21,26 @@ export function LoginPage() {
     });
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     console.log(formData);
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: formData.email,
+        password: formData.password,
+      });
+      console.log("Sign in worked");
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+        console.log("Setting Session Id worked");
+      } else {
+        throw new Error("login failed");
+      }
+    } catch (err) {
+      if (isClerkAPIResponseError(err)) console.log(err.errors);
+      alert("Login failed");
+    }
+
     setFormData({
       email: "",
       password: "",

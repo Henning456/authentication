@@ -2,6 +2,12 @@ import "./HomePage.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ContentBox } from "../components/ContentBox";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 const apiUrl = "http://localhost:3000/";
 
@@ -32,6 +38,12 @@ export function HomePage() {
         <p>{JSON.stringify(apiData)}</p>
         {error && <p>{error}</p>}
       </ContentBox>
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
     </>
   );
 }
